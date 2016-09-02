@@ -41,7 +41,17 @@ public class MainGame extends Activity {
     protected void onResume() {
         super.onResume();
 
+        /**
+         * onResume内で「SoundPool」をインスタンス化すると、
+         * Activityがバックグラウンドから、フォアグラウンドに戻ってきた時に、毎回インスタンス化してしまうので
+         * onStart内で実行するのが適切(Activity内にonStartを、オーバーライドする必要がある)
+         * */
         // 効果音を使えるように読み込み
+        /**
+         * Android5.0から下記の「SoundPool」のインスタンス化は非推奨のため、
+         * http://qiita.com/totem2048/items/1fb00e8e7e9a683c89ea
+         *  ここのサイトを参考に修正
+         * */
         mSoundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
         mSoundId[0] = mSoundPool.load(getApplicationContext(), R.raw.se_maoudamashii_onepoint15, 1);
         mSoundId[1] = mSoundPool.load(getApplicationContext(), R.raw.se_maoudamashii_onepoint33, 1);
@@ -59,6 +69,10 @@ public class MainGame extends Activity {
         // 作成したDatabaseHelperクラスに読み取り専用でアクセス
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        /**
+         * ここも同じく、DB全般を管理するクラスを一つにまとめる
+         * */
 
         /*
         SELECT文
@@ -83,6 +97,15 @@ public class MainGame extends Activity {
         c.close();
         db.close();
 
+        /**
+         * この処理が実行されるたびに、「findViewById」が実行されるので、
+         * 各Viewをグローバル変数にし、onCreate内でfindViewByIdさせる
+         *
+         * 例)
+         *  private TextView txt_hoge;  ->  グローバル変数定義
+         *
+         *  onCreate内で、this.txt_hoge = (TextView)findViewById(R.id.hoge);
+         * */
         ((TextView)findViewById(R.id.textQuestion)).setText(Kenmei); // 問題文となる都道府県をテキストに表示
         ((Button)findViewById(R.id.button1)).setText(Choice1); // 四択の選択肢1をボタンに表示
         ((Button)findViewById(R.id.button2)).setText(Choice2); // 四択の選択肢2をボタンに表示
@@ -99,6 +122,12 @@ public class MainGame extends Activity {
             mSoundPool.play(mSoundId[0], 1.0f, 1.0f, 0, 0, 1.0f); // 正解音を再生
 
             // データベースを更新処理
+            /**
+             * ここも同じく、DB全般を管理するクラスを一つにまとめる
+             * 複数箇所でDB操作をするのなら、DB全般を管理するクラスをグローバル変数として定義し、
+             * onCreate内でインスタンス化させ、それを使う
+             *  -> DB操作する毎にインスタンス化させない
+             * */
             ContentValues values = new ContentValues();
             // Clear 0 → 1
             values.put("Clear",1);
@@ -124,6 +153,9 @@ public class MainGame extends Activity {
 
 
     // onPauseが呼ばれたら効果音に関する物は全て解放する
+    /**
+     * onStop内で解放させる
+     * */
     @Override
     protected void onPause() {
         super.onPause();

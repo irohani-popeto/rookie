@@ -37,6 +37,19 @@ public class StageSelect extends Activity {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
+        /**
+         * DB全般を管理するクラスを一つにまとめる
+         *
+         * 例)
+         *  MyDB class を作成し、内部クラスとして「SQLiteOpenHelper」を定義
+         *  MyDBのコンストラクタ内で、「SQLiteOpenHelper」のインスタンスを生成
+         *
+         *  ■ MyDB
+         *    ・open()       ->  db open
+         *    ・close()      ->  db close
+         *    ・getHogehoge  ->  A Tableから、条件hogeのCursorを取得
+         * */
+
         /*
         SELECT文
         テーブル名 MyTableから Clearの項目を検索してくる条件式
@@ -45,6 +58,12 @@ public class StageSelect extends Activity {
 
         // 上記のSELECT文を実行してカーソルを取得
         Cursor c = db.rawQuery(sql, null);
+        /**
+         * c.moveToFirst() の返り値はboolean型なので、以下のようにする
+         * if(c.moveToFirst(){
+         *      この中にcursorのデータを使った処理を書く
+         * }
+         * */
         c.moveToFirst();
 
         // CLEAR_FLAGを入れる配列を作成。 配列の要素数はデータの数だけ
@@ -52,8 +71,16 @@ public class StageSelect extends Activity {
 
         // クリア状況取得して配列CLEAR_FLAGに入れていく
         for(int i = 0; i < c.getCount(); i++){
+            /**
+             * Cursorから値を取得する場合は、
+             * c.getInt(c.getColumnIndexOrThrow(MyDB.HOGE_HOGE))にする
+             *  HOGE_HOGEは、MyDBで定義しているカラム名が格納されている変数
+             * */
             ClearFlg[i] = c.getInt(0);
             c.moveToNext();
+            /**
+             * ここで、「ボタンの個数だけ繰り返す」の処理を同時に実行する
+             * */
         }
         // データベースからデータを取り終わったのでクローズ処理
         c.close();
