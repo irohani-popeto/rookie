@@ -1,0 +1,24 @@
+*.apk
+*.ap_
+*.dex
+*.class
+*.ipr
+*.iws
+*.iml
+
+local.properties
+import-summary.txt
+manifest-merger-release-report.txt
+crashlytics-build.properties
+com_crashlytics_export_strings.xml
+Thumbs.db
+.DS_Store
+
+bin/
+gen/
+build/
+proguard/
+.gradle/
+.idea/
+
+# @see http://gihyo.jp/dev/serial/01/android_studio/0035
