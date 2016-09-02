@@ -6,7 +6,7 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-
+    <!-- 文字列は全て「string.xml」に定義し、それらを参照させる -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="150dp"

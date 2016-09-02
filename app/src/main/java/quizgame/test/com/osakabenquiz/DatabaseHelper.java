@@ -18,6 +18,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        /**
+         * カラム名とテーブル名はグローバル変数「public static final String hogehoge」で定義する
+         * この場合は _id, Pref, City0, City1, City2, City3, City4, Clear
+         * */
+
         db.execSQL("CREATE TABLE MyTable " +
                 "(" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT" +
